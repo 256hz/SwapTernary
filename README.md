@@ -16,11 +16,11 @@ It supports nested ternaries and will ignore the `?` and `:` characters if they 
 
 ## Known Issues
 
-- Quotes in comments are not ignored and will mess up the parse (especially `'`, as in `don't`).
+- Quotes in comments are not ignored and will mess up the parse if they precede the condition.
 - Testing that the error message is shown is not done, pending finding a way to mock some VS Code internals properly.
 
 ## Release Notes
 
-### 1.0.0
+### 0.0.1
 
 Initial release of TernarySwap.swapTernary
