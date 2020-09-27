@@ -130,12 +130,10 @@ export const swapTernary = (selection: string) => {
 		}
 	});
 
-	if (quoteStack.length > 0) {
-    expression.errors.push(`Error parsing ternary: ${quoteStack.length} quote(s) still on stack: [${quoteStack.join(',')}]`);
-	}
-
 	if (ternaryStackDepth !== 0) {
-		expression.errors.push(`Error parsing ternary: ${Math.abs(ternaryStackDepth)} too many \`${ternaryStackDepth > 0 ? '?' : ':'}\`s`);
+    const neededNumber = Math.abs(ternaryStackDepth);
+    const usePlural = neededNumber !== 1;
+		expression.errors.push(`Error parsing ternary: need ${neededNumber} more \`${ternaryStackDepth < 0 ? '?' : ':'}\`${usePlural ? 's' : ''}`);
   }
   
   return expression;
