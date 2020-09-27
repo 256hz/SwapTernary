@@ -33,13 +33,15 @@ export const swapTernary = (selection: string) => {
 		[Part.falseCaseEndFormatting]: [] as string[],
     errors: [] as string[],
 	};
-	// so we can make sure we're not paying attention to ?: inside strings
+  // so we can make sure we're not paying attention to ?: inside strings
+  // TODO: ignore quotes inside comments, they currently break the swap
 	const quoteStack = [] as string[];
 	// we are matching `?`s with `:`s, so we don't need to keep the characters, just the depth
   let ternaryStackDepth = 0;
   // oversees which part of the expression we are parsing.  Advanced according to logic below.
 	let activePart: Part = Part.condition;
 
+  // processes whitespace at the end of sections.  Advances to nextPartName on a non-space character
 	const advancePartAtEndOfFormatting = (
 		currentPartName: Part,
 		nextPartName: Part,
@@ -159,7 +161,7 @@ export const formatExpression = (expression: Expression) => {
 export function activate(context: vscode.ExtensionContext) {
 	console.log('SwapTernary active: ⇧⌘P, "Swap Ternary"');
 
-	let disposable = vscode.commands.registerCommand('ternaryswap.swapTernary', () => {
+	let disposable = vscode.commands.registerCommand('256hz.swapTernary', () => {
 		const activeEditor = vscode.window.activeTextEditor;
 		
 		if (!activeEditor) {
