@@ -8,6 +8,13 @@
 
 <img src="https://j.gifs.com/JyoyZK.gif" width="476" height="331"/>
 
+## Usage
+
+1. Highlight ternary
+2. Open the Command Palette (Mac: ⇧⌘P, Windows: ^⇧P)
+3. type "Swap Ternary"
+4. Press the Enter key down for 0.1-ish seconds and release it back to the up (or "idle") position
+
 ## Features
 
 This extension automatically swaps the logic in a ternary expression for you.  It will preserve formatting/whitespace, and a semicolon at the end, if included.
