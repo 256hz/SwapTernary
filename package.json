@@ -2,7 +2,7 @@
 	"name": "ternaryswap",
 	"displayName": "TernarySwap",
   "description": "Swap the outcome of a ternary.",
-  "publisher": "http://github.com/256hz",
+  "publisher": "256hz",
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.49.0"
