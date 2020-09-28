@@ -11,7 +11,7 @@
 		"Other"
 	],
 	"activationEvents": [
-		"onCommand:ternaryswap.swapTernary"
+		"onCommand:256hz.swapTernary"
 	],
 	"main": "./out/extension.js",
 	"contributes": {

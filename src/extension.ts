@@ -137,6 +137,10 @@ export const swapTernary = (selection: string) => {
     const usePlural = neededNumber !== 1;
 		expression.errors.push(`Error parsing ternary: need ${neededNumber} more \`${ternaryStackDepth < 0 ? '?' : ':'}\`${usePlural ? 's' : ''}`);
   }
+
+  if (!expression[Part.trueCase].length || !expression[Part.falseCase].length) {
+    expression.errors.push('Could not parse selection as ternary');
+  }
   
   return expression;
 };
