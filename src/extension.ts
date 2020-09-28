@@ -159,16 +159,18 @@ export const formatExpression = (expression: Expression) => {
     : endOfOriginalExpression;
   const falseCaseEndFormatting = expression[Part.falseCase].join('').match(regex.endSpace)?.join('');
 
-  return condition +
-  '?' +
-  (trueCaseFormatting || '') +
-  falseCase +
-  (trueCaseEndFormatting || '') +
-  ':' +
-  (falseCaseFormatting || '') +
-  trueCase +
-  (hasSemicolonEnd ? ';' : '') +
-  (falseCaseEndFormatting || '');
+  return (
+    condition
+    + '?'
+    + (trueCaseFormatting || '')
+    + falseCase
+    + (trueCaseEndFormatting || '')
+    + ':'
+    + (falseCaseFormatting || '')
+    + trueCase
+    + (hasSemicolonEnd ? ';' : '')
+    + (falseCaseEndFormatting || '')
+  );
 };
 
 export function activate(context: vscode.ExtensionContext) {
