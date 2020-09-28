@@ -3,8 +3,8 @@ import * as vscode from 'vscode';
 enum Part {
 	'condition',
   'trueCaseFormatting',
-  'trueCaseEndFormatting',
 	'trueCase',
+  'trueCaseEndFormatting',
 	'falseCaseFormatting',
   'falseCase',
   'falseCaseEndFormatting',
@@ -151,7 +151,7 @@ export const formatExpression = (expression: Expression) => {
 
   const condition = expression[Part.condition].join('');
   const trueCaseFormatting = expression[Part.trueCaseFormatting].join('');
-  const trueCase = expression[Part.trueCase].join('').trimRight().concat(hasSemicolonEnd ? ';' : '');
+  const trueCase = expression[Part.trueCase].join('').trimRight();
   const trueCaseEndFormatting = expression[Part.trueCase].join('').match(regex.endSpace)?.join('');
   const falseCaseFormatting = expression[Part.falseCaseFormatting].join('');
   const falseCase = hasSemicolonEnd
@@ -159,7 +159,16 @@ export const formatExpression = (expression: Expression) => {
     : endOfOriginalExpression;
   const falseCaseEndFormatting = expression[Part.falseCase].join('').match(regex.endSpace)?.join('');
 
-	return `${condition}?${trueCaseFormatting}${falseCase}${trueCaseEndFormatting}:${falseCaseFormatting}${trueCase}${falseCaseEndFormatting || ''}`;
+  return condition +
+  '?' +
+  (trueCaseFormatting || '') +
+  falseCase +
+  (trueCaseEndFormatting || '') +
+  ':' +
+  (falseCaseFormatting || '') +
+  trueCase +
+  (hasSemicolonEnd ? ';' : '') +
+  (falseCaseEndFormatting || '');
 };
 
 export function activate(context: vscode.ExtensionContext) {
