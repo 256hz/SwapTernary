@@ -3,7 +3,7 @@
 	"displayName": "SwapTernary",
 	"description": "Swap the outcome of a ternary.",
 	"publisher": "256hz",
-	"version": "0.1.5",
+	"version": "0.1.6",
 	"engines": {
 		"vscode": "^1.49.0"
 	},
@@ -20,14 +20,14 @@
 				"command": "256hz.swapTernary",
 				"title": "Swap Ternary"
 			}
-    ],
-    "keybindings":[
-      {
-        "command": "256hz.swapTernary",
-        "key": "shift+alt+s"
-      }
-    ]
-  },
+		],
+		"keybindings": [
+			{
+				"command": "256hz.swapTernary",
+				"key": "shift+alt+s"
+			}
+		]
+	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
