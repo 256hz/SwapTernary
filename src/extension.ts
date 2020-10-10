@@ -141,6 +141,10 @@ export const swapTernary = (selection: string) => {
   if (!expression[Part.trueCase].length || !expression[Part.falseCase].length) {
     expression.errors.push('Could not parse selection as ternary');
   }
+
+  if (quoteStack.length > 0) {
+    expression.errors.push('Could not parse terminary - unterminated string');
+  }
   
   return expression;
 };
@@ -150,31 +154,37 @@ export const formatExpression = (expression: Expression) => {
 	const hasSemicolonEnd = endOfOriginalExpression.slice(-1) === ';';
 
   const condition = expression[Part.condition].join('');
+
   const trueCaseFormatting = expression[Part.trueCaseFormatting].join('');
+
   const trueCase = expression[Part.trueCase].join('').trimRight();
+
   const trueCaseEndFormatting = expression[Part.trueCase].join('').match(regex.endSpace)?.join('');
+
   const falseCaseFormatting = expression[Part.falseCaseFormatting].join('');
+
   const falseCase = hasSemicolonEnd
     ? endOfOriginalExpression.split('').slice(0, -1).join('')
     : endOfOriginalExpression;
-  const falseCaseEndFormatting = expression[Part.falseCase].join('').match(regex.endSpace)?.join('');
+
+    const falseCaseEndFormatting = expression[Part.falseCase].join('').match(regex.endSpace)?.join('');
 
   return (
     condition
-    + '?'
-    + (trueCaseFormatting || '')
-    + falseCase
-    + (trueCaseEndFormatting || '')
-    + ':'
-    + (falseCaseFormatting || '')
-    + trueCase
-    + (hasSemicolonEnd ? ';' : '')
-    + (falseCaseEndFormatting || '')
+      + '?'
+      + trueCaseFormatting
+      + falseCase
+      + trueCaseEndFormatting
+      + ':'
+      + falseCaseFormatting
+      + trueCase
+      + (hasSemicolonEnd ? ';' : '')
+      + falseCaseEndFormatting
   );
 };
 
 export function activate(context: vscode.ExtensionContext) {
-	console.log('SwapTernary active: ⇧⌘P, "Swap Ternary"');
+	console.log('SwapTernary: highlight ternary & hit ⇧⌥s (or ⇧⌘P, type "Swap Ternary")');
 
 	let disposable = vscode.commands.registerCommand('256hz.swapTernary', () => {
 		const activeEditor = vscode.window.activeTextEditor;

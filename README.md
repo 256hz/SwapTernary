@@ -17,11 +17,11 @@ It supports nested ternaries and will ignore the `?` and `:` characters if they 
 ## Usage
 
 1. Highlight ternary (nothing after the ternary except a `;` or formatting)
-2. Hit `shift + alt + s`
+2. Hit ⇧⌥s (`shift + alt + s`)
 
 ## Known Issues
 
-- Quotes in comments are not ignored and an odd number of them will mess up the parse.
+- Quotes in comments are not ignored, and an odd number of them will mess up the parse.
 - Testing that the error message is shown is not done, pending finding a way to mock some VS Code internals properly.
 
 ## Release Notes
