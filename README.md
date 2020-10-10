@@ -16,10 +16,8 @@ It supports nested ternaries and will ignore the `?` and `:` characters if they 
 
 ## Usage
 
-1. Highlight ternary (don't select anything after the ternary except a `;` or whitespace)
-2. Open the Command Palette (Mac: ⇧⌘P, Windows: ^⇧P)
-3. type "Swap Ternary"
-4. Press the Enter key down for 0.1-ish seconds and release it back to the up (or "idle") position
+1. Highlight ternary (nothing after the ternary except a `;` or formatting)
+2. Hit `shift + alt + s`
 
 ## Known Issues
 
@@ -28,7 +26,7 @@ It supports nested ternaries and will ignore the `?` and `:` characters if they 
 
 ## Release Notes
 
-### 0.1.6
+### 0.1.7
 
 Add keyboard shortcut
 
