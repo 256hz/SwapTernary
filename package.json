@@ -20,8 +20,14 @@
 				"command": "256hz.swapTernary",
 				"title": "Swap Ternary"
 			}
-		]
-	},
+    ],
+    "keybindings":[
+      {
+        "command": "256hz.swapTernary",
+        "key": "shift+alt+s"
+      }
+    ]
+  },
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",

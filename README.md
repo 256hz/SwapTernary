@@ -28,6 +28,10 @@ It supports nested ternaries and will ignore the `?` and `:` characters if they 
 
 ## Release Notes
 
+### 0.1.6
+
+Add keyboard shortcut
+
 ### 0.1.1
 
 Initial release
