@@ -4,7 +4,7 @@
 	"description": "Swap the outcome of a ternary.",
 	"publisher": "256hz",
 	"version": "0.1.8",
-	"icon": "https://imgur.com/pbHIiUt",
+	"icon": "src/img/swapTernaryLogo128.png",
 	"engines": {
 		"vscode": "^1.49.0"
 	},
