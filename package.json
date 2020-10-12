@@ -3,7 +3,8 @@
 	"displayName": "SwapTernary",
 	"description": "Swap the outcome of a ternary.",
 	"publisher": "256hz",
-	"version": "0.1.7",
+  "version": "0.1.7",
+  "icon": "https://imgur.com/pbHIiUt",
 	"engines": {
 		"vscode": "^1.49.0"
 	},
