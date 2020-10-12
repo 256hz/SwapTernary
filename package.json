@@ -3,8 +3,8 @@
 	"displayName": "SwapTernary",
 	"description": "Swap the outcome of a ternary.",
 	"publisher": "256hz",
-  "version": "0.1.7",
-  "icon": "https://imgur.com/pbHIiUt",
+	"version": "0.1.8",
+	"icon": "https://imgur.com/pbHIiUt",
 	"engines": {
 		"vscode": "^1.49.0"
 	},
@@ -52,9 +52,9 @@
 		"typescript": "^4.0.2",
 		"vscode-test": "^1.4.0"
 	},
-  "dependencies": {},
-  "repository": {
-    "type" : "git",
-    "url" : "https://github.com/256hz/SwapTernary"
-  }
+	"dependencies": {},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/256hz/SwapTernary"
+	}
 }
