@@ -103,7 +103,7 @@ export const swapTernary = (ternary: string) => {
       continue;
     }
 
-    // if we're not in a string/comment, but the char is a quote, add it to the quote stack and continue
+    // if we're not in a string/comment, but the char is a quote, save the quote and wait for close
     if (isQuote(char) && !state.quote && !state.inComment) {
       state.quote = char;
       currentPart.push(char);
@@ -163,11 +163,15 @@ export const swapTernary = (ternary: string) => {
         expression.errors.push(`Mismatched closing brace: ${char}`);
       }
       currentPart.push(char);
+      if (next === undefined) {
+        transferWhitespace(Part.FalseCase, Part.FalseCaseBeginFormatting, Part.FalseCaseEndFormatting);
+        break;
+      }
       continue;
     }
 
     // check for end of condition
-    if (state.part === Part.Condition && char === '?' && next !== '.' && !state.braceStack.includes('(')) {
+    if (state.part === Part.Condition && char === '?' && next !== '.') {
       state.ternaryDepth = 1;
       state.part = Part.TrueCase;
       continue;
@@ -260,10 +264,6 @@ export function activate(context: vscode.ExtensionContext) {
 
       if (newExpression.errors.length) {
         vscode.window.showErrorMessage(newExpression.errors[0]);
-
-        activeEditor.edit(editBuilder => {
-          editBuilder.replace(selection, JSON.stringify(newExpression, null, 2));
-        });
         return;
       }
 

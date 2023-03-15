@@ -150,11 +150,16 @@ const swapTernary = (ternary) => {
         expression.errors.push(`Mismatched closing brace: ${char}`);
       }
       currentPart.push(char);
+      if (next === undefined) {
+        console.log('end')
+        transferWhitespace(Part.FalseCase, Part.FalseCaseBeginFormatting, Part.FalseCaseEndFormatting);
+        break;
+      }
       continue;
     }
 
     // check for end of condition
-    if (state.part === Part.Condition && char === '?' && next !== '.' && !state.braceStack.includes('(')) {
+    if (state.part === Part.Condition && char === '?' && next !== '.') {
       state.ternaryDepth = 1;
       state.part = Part.TrueCase;
       continue;
@@ -183,6 +188,7 @@ const swapTernary = (ternary) => {
 
     // check for end of false case
     if (state.part === Part.FalseCase && state.ternaryDepth === 1 && next === undefined) {
+      console.log('end')
       currentPart.push(char);
       transferWhitespace(Part.FalseCase, Part.FalseCaseBeginFormatting, Part.FalseCaseEndFormatting);
       break;
@@ -221,17 +227,16 @@ const swapTernary = (ternary) => {
     console.log('Errors:\n', expression.errors.join('\n\t - '));
   }
 
-  // console.log({
-  //   ...expression,
-  //   trueCase: expression.trueCase.join(''),
-  //   falseCase: expression.falseCase.join(''),
-  // });
-  console.log(formatExpression(expression))
+  console.log({
+    ...expression,
+    trueCase: expression.trueCase.join(''),
+    falseCase: expression.falseCase.join(''),
+  });
+  console.log(formatExpression(expression));
   return expression;
 }
 
-swapTernary(`
-{!hasLinkedBankAccount ? (
+swapTernary(`{!hasLinkedBankAccount ? (
   <View style={styles.accountContainer}>
     <View style={[styles.accountTextContainer, styles.accountTextMargin]}>
       <View style={styles.questionMarkCircle}>
@@ -270,5 +275,4 @@ swapTernary(`
       />
     </View>
   </View>
-)}
-`);
+)}`);
