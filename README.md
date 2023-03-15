@@ -1,8 +1,8 @@
-# SwapTernary
+# SwapTernary (an extension for VS Code)
 
 ## Features
 
-This extension automatically swaps the logic in a ternary expression for you.  It will preserve formatting/whitespace, and a semicolon at the end, if included.
+This extension automatically swaps the logic in a ternary expression for you.  It will preserve formatting/whitespace if included.
 
 Supports nested ternaries.  `?` and `:` are ignored in strings.  `//` and `/* */` comments are ignored.  It will show an error if the ternary won't resolve (unbalanced if/then, unterminated string).
 
@@ -25,7 +25,7 @@ Supports nested ternaries.  `?` and `:` are ignored in strings.  `//` and `/* */
 
 ## Release Notes
 
-### 0.3.0
+### 0.4.2
 
 - better handling for quotes, braces, parens, JSX
 - rewrite for author's sanity
