@@ -22,9 +22,13 @@ Supports nested ternaries.  `?` and `:` are ignored in strings.  `//` and `/* */
 ## Known Issues
 
 - Comments are grouped with the condition that precedes them, so they will not switch with the true/false cases.
-- Testing that the error message is shown is not done, pending finding a way to mock some VS Code internals properly.
 
 ## Release Notes
+
+### 0.3.0
+
+- better handling for quotes, braces, parens, JSX
+- rewrite for author's sanity
 
 ### 0.2.0
 

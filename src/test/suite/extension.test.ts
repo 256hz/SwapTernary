@@ -1,94 +1,87 @@
 import * as assert from 'assert';
-import * as sinon from 'sinon';
 
 import * as vscode from 'vscode';
 import { swapTernary, formatExpression } from '../../extension';
-
-const showErrorMessage = sinon.stub(vscode.window, "showErrorMessage");
-
-// sinon.stub(vscode, 'window');
-// const executeCommand = sinon.stub(vscode.commands, 'executeCommand');
-// executeCommand.callThrough();
 
 suite('Extension Test Suite', () => {
 	vscode.window.showInformationMessage('Start all tests.');
 
 	test('One-line ternary', () => {
-		const ternary = '0 ? true : false';
-		const swapped = '0 ? false : true';
+		const original = '0 ? true : false';
+		const expected = '0 ? false : true';
 
-		assert.strictEqual(formatExpression(swapTernary(ternary)), swapped);
+		assert.strictEqual(formatExpression(swapTernary(original)), expected);
 	});
 
 	test('One-line ternary with ?: chars in strings', () => {
-		const ternary = '0 ? ":?:???::?" : "?:?:::??:"';
-		const swapped = '0 ? "?:?:::??:" : ":?:???::?"';
+		const original = '0 ? ":?:???::?" : "?:?:::??:"';
+		const expected = '0 ? "?:?:::??:" : ":?:???::?"';
 
-		assert.strictEqual(formatExpression(swapTernary(ternary)), swapped);
+		assert.strictEqual(formatExpression(swapTernary(original)), expected);
 	});
 
 	test('Two-line ternary', () => {
-		const ternary = `
+		const original = `
 isThisTrue
 	? yaBetterBelieveIt : nope
 `;
-		const swapped = `
+		const expected = `
 isThisTrue
 	? nope : yaBetterBelieveIt
 `;
-		assert.strictEqual(formatExpression(swapTernary(ternary)), swapped);
+		assert.strictEqual(formatExpression(swapTernary(original)), expected);
 	});
 
 	test('Two-line ternary with ternaries in strings with semicolon and whitespace at end', () => {
-		const ternary = `
+		const original = `
 isThisTrue
 	? "x ? y : z" : "a ? b : c";
 \n
 \n
 `;
-		const swapped = `
+		const expected = `
 isThisTrue
 	? "a ? b : c" : "x ? y : z";
 \n
 \n
 `;
 
-		assert.strictEqual(formatExpression(swapTernary(ternary)), swapped);
+		assert.strictEqual(formatExpression(swapTernary(original)), expected);
 	});
 
 	test('Three-line ternary with semicolon end', () => {
-		const ternary = `
+		const original = `
 isThisTrue
 	? yaBetterBelieveIt
 	: nope;
 `;
-		const swapped = `
+		const expected = `
 isThisTrue
 	? nope
 	: yaBetterBelieveIt;
 `;
-		assert.strictEqual(formatExpression(swapTernary(ternary)), swapped);
+		assert.strictEqual(formatExpression(swapTernary(original)), expected);
 	});
 
 	test('Three-line ternary with ternaries in strings and extra tabs in the false case', () => {
-		const ternary = `
+		const original = `
 isThisTrue
 \t? "x ? y : z"
 \t\t\t: "a ? b : c";
 `;
-		const swapped = `
+		const expected = `
 isThisTrue
 \t? "a ? b : c"
 \t\t\t: "x ? y : z";
 `;
 
-		assert.strictEqual(formatExpression(swapTernary(ternary)), swapped);
+		assert.strictEqual(formatExpression(swapTernary(original)), expected);
 	});
 
 
 
 	test('Deep nested ternary with strings and semicolon end', () => {
-		const nested = `
+		const original = `
 'x'
 	? "x ? y : z"
 		? true
@@ -102,7 +95,7 @@ isThisTrue
 		: \`${false}\`;
 `;
 
-		const swapped = `
+		const expected = `
 'x'
 	? \`false\`
 		? true
@@ -116,27 +109,51 @@ isThisTrue
 		: false;
 `;
 		
-		assert.strictEqual(formatExpression(swapTernary(nested)), swapped);
+		assert.strictEqual(formatExpression(swapTernary(original)), expected);
 	});
 
-// 	test('should show error when strings are not properly terminated', () => {
-//     const missingQuoteTernary = 'x ? "true : `false`;';
+  test('JSX ternary', () => {
+    const original = `
+      {selectedBankAccount && edit ? (
+        <Pressable
+          onPress={edit}
+          style={styles.editContainer}
+          accessibilityLabel={
+            editIcon === 'edit'
+              ? messages.accessibilityLabelEdit
+              : messages.accessibilityLabelRemove
+          }
+          testID={TestId.ActionButton}
+        >
+          {editIcon === 'edit' ? (
+            <Icon name='pencil' width={18} height={18} fill={colors.primaryText} />
+          ) : (
+            <Icon name='bin' width={18} height={18} fill={colors.text.mediumGray} />
+          )}
+        </Pressable>
+      ) : null}
+    `;
+    const expected = `
+      {selectedBankAccount && edit ? null : (
+        <Pressable
+          onPress={edit}
+          style={styles.editContainer}
+          accessibilityLabel={
+            editIcon === 'edit'
+              ? messages.accessibilityLabelEdit
+              : messages.accessibilityLabelRemove
+          }
+          testID={TestId.ActionButton}
+        >
+          {editIcon === 'edit' ? (
+            <Icon name='pencil' width={18} height={18} fill={colors.primaryText} />
+          ) : (
+            <Icon name='bin' width={18} height={18} fill={colors.text.mediumGray} />
+          )}
+        </Pressable>
+      )}
+    `;
 
-//     swapTernary(missingQuoteTernary);
-// 		assert.ok(showErrorMessage.calledOnce);
-// 		showErrorMessage.restore();
-// 	});
-
-// 	test('should show error when nested ternary does not resolve', () => {
-//     const missingResolutionTernary = `
-// isThisTrue
-// 	? yeahButIsThisTrueToo
-// 		? ohYeahItsTrue
-// 		: nopeAreWeDoneHere
-// `;
-
-//     swapTernary(missingResolutionTernary);
-// 		assert.ok(showErrorMessage.calledOnce);
-// 		showErrorMessage.restore();
-// 	});
+    assert.strictEqual(formatExpression(swapTernary(original)), expected);
+  });
 });
