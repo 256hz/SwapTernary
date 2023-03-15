@@ -1,5 +1,3 @@
-import * as vscode from 'vscode';
-
 const Part = {
   Condition: 'condition',
   TrueCaseBeginFormatting: 'trueCaseBeginFormatting',
@@ -11,28 +9,17 @@ const Part = {
   EndCharacters: 'endCharacters',
 };
 
-type PartKey = keyof typeof Part;
-type PartValue = typeof Part[PartKey];
-type Expression = {
-  [key in PartValue]: string[];
-} & {
-  errors: string[];
-}
-
-type OpenBrace = '(' | '{' | '[';
-type CloseBrace = ')' | '}' | ']';
-
-const isOpeningBrace = (char: string): char is OpenBrace => ['(', '{', '['].includes(char);
-const isClosingBrace = (char: string): char is CloseBrace => [')', '}', ']'].includes(char);
-const isQuote = (char: string) => ['"', "'", '`'].includes(char);
+const isOpeningBrace = (char) => ['(', '{', '['].includes(char);
+const isClosingBrace = (char) => [')', '}', ']'].includes(char);
+const isQuote = (char) => ['"', "'", '`'].includes(char);
 const endingBraceFor = {
   '(': ')',
   '{': '}',
   '[': ']',
 };
-const isWhitespace = (char: string) => !!char?.match(/\s/);
+const isWhitespace = (char) => !!char?.match(/\s/);
 
-export const formatExpression = (expression: Expression) => {
+const formatExpression = (expression) => {
   const condition = expression[Part.Condition].join('');
   const trueCaseBeginFormatting = expression[Part.TrueCaseBeginFormatting].join('');
   const trueCase = expression[Part.TrueCase].join('');
@@ -56,42 +43,42 @@ export const formatExpression = (expression: Expression) => {
   );
 };
 
-export const swapTernary = (ternary: string) => {
-  const expression: Expression = {
-    [Part.Condition]: [] as string[],
-    [Part.TrueCaseBeginFormatting]: [] as string[],
-    [Part.TrueCase]: [] as string[],
-    [Part.TrueCaseEndFormatting]: [] as string[],
-    [Part.FalseCaseBeginFormatting]: [] as string[],
-    [Part.FalseCase]: [] as string[],
-    [Part.FalseCaseEndFormatting]: [] as string[],
-    [Part.EndCharacters]: [] as string[],
-    errors: [] as string[],
+const swapTernary = (ternary) => {
+  const expression = {
+    [Part.Condition]: [],
+    [Part.TrueCaseBeginFormatting]: [],
+    [Part.TrueCase]: [],
+    [Part.TrueCaseEndFormatting]: [],
+    [Part.FalseCaseBeginFormatting]: [],
+    [Part.FalseCase]: [],
+    [Part.FalseCaseEndFormatting]: [],
+    [Part.EndCharacters]: [],
+    errors: [],
   };
   const state = {
     part: Part.Condition,
     quote: '',
-    braceStack: [] as OpenBrace[],
+    braceStack: [],
     ternaryDepth: 0,
     inComment: 'none',
     jsxDepth: 0,
   }
   const characters = ternary.split('');
 
-  const transferWhitespace = (fromPart: PartValue, toBeginningPart: PartValue, toEndPart: PartValue) => {
+  const transferWhitespace = (fromPart, toBeginningPart, toEndPart) => {
     const from = expression[fromPart];
     const toBeginning = expression[toBeginningPart];
     const toEnd = expression[toEndPart];
     while (isWhitespace(from[0])) {
-      toBeginning.push(from.shift()!);
+      toBeginning.push(from.shift());
     }
     while (isWhitespace(from[from.length - 1])) {
-      toEnd.unshift(from.pop()!);
+      toEnd.unshift(from.pop());
     }
   }
 
   while (characters[0]) {
-    const char = characters.shift()!;
+    const char = characters.shift();
     const prev = expression[state.part][expression[state.part].length - 1];
     const next = characters[0];
     const currentPart = expression[state.part];
@@ -103,7 +90,7 @@ export const swapTernary = (ternary: string) => {
       continue;
     }
 
-    // if we're not in a string/comment, but the char is a quote, add it to the quote stack and continue
+    // if we're not in a string/comment, but the char is a quote, save the quote and wait for close
     if (isQuote(char) && !state.quote && !state.inComment) {
       state.quote = char;
       currentPart.push(char);
@@ -207,7 +194,7 @@ export const swapTernary = (ternary: string) => {
   // check for stuff at the end of the expression that we want to stay at the end
   const { falseCase } = expression;
   while (falseCase[falseCase.length - 1] === '}' || falseCase[falseCase.length - 1] === ';') {
-    expression[Part.EndCharacters].unshift(falseCase.pop()!);
+    expression[Part.EndCharacters].unshift(falseCase.pop());
   };
 
   // if we're still in a nested section, add errors
@@ -234,47 +221,54 @@ export const swapTernary = (ternary: string) => {
     console.log('Errors:\n', expression.errors.join('\n\t - '));
   }
 
+  // console.log({
+  //   ...expression,
+  //   trueCase: expression.trueCase.join(''),
+  //   falseCase: expression.falseCase.join(''),
+  // });
+  console.log(formatExpression(expression))
   return expression;
 }
 
-export function activate(context: vscode.ExtensionContext) {
-	console.log('SwapTernary: highlight ternary & hit ⇧⌥s (or ⇧⌘P, type "Swap Ternary")');
-
-	let disposable = vscode.commands.registerCommand('256hz.swapTernary', () => {
-		const activeEditor = vscode.window.activeTextEditor;
-
-		if (!activeEditor) {
-			return;
-		}
-
-		const { document, selection } = activeEditor;
-
-		// Get the expression within the selection
-		const expression = document.getText(selection);
-		if (!expression) {
-			vscode.window.showInformationMessage('No selection');
-			return;
-		}
-
-      const newExpression = swapTernary(expression);
-
-      if (newExpression.errors.length) {
-        vscode.window.showErrorMessage(newExpression.errors[0]);
-
-        activeEditor.edit(editBuilder => {
-          editBuilder.replace(selection, JSON.stringify(newExpression, null, 2));
-        });
-        return;
-      }
-
-			activeEditor.edit(editBuilder => {
-				editBuilder.replace(selection, formatExpression(newExpression));
-			});
-	});
-
-	context.subscriptions.push(disposable);
-}
-
-export function deactivate() {
-  console.log('SwapTernary deactivated');
-}
+swapTernary(`
+{!hasLinkedBankAccount ? (
+  <View style={styles.accountContainer}>
+    <View style={[styles.accountTextContainer, styles.accountTextMargin]}>
+      <View style={styles.questionMarkCircle}>
+        <Icon
+          name='questionMark'
+          stroke={localColors.keyLineLightGrey}
+          fill={localColors.keyLineLightGrey}
+          width={15}
+          height={15}
+        />
+      </View>
+      <View>
+        <Text style={styles.accountTitle}>{messages.noAccountTitle}</Text>
+        <Text style={styles.accountSubtitle}>{messages.noAccountSubtitle}</Text>
+      </View>
+    </View>
+    <CTAButton
+      variant='primary'
+      size='small'
+      style={styles.noAccountCTA}
+      onPress={() => openLink({ isManualConfirm: false })}
+    >
+      {messages.noAccountCTA}
+    </CTAButton>
+  </View>
+) : (
+  <View style={[styles.accountContainer, styles.paddingOverride]}>
+    <View style={[styles.accountTextContainer]}>
+      <BankAccount
+        containerStyle={styles.bankAccountContainer}
+        displayAccountType
+        accountNameStyle={styles.accountTitle}
+        accountTypeOrMaskStyle={styles.accountSubtitle}
+        editIcon='remove'
+        edit={() => setShowModal(true)}
+      />
+    </View>
+  </View>
+)}
+`);
