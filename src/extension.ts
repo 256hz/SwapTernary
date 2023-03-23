@@ -111,7 +111,7 @@ export const swapTernary = (ternary: string) => {
     }
 
     // check for start of JSX
-    if (char === '<' && next.match(/[a-z]/i)) {
+    if (char === '<' && next.match(/[a-z>]/i)) {
       state.jsxDepth += 1;
       currentPart.push(char);
       continue;
@@ -260,16 +260,16 @@ export function activate(context: vscode.ExtensionContext) {
 			return;
 		}
 
-      const newExpression = swapTernary(expression);
+    const newExpression = swapTernary(expression);
 
-      if (newExpression.errors.length) {
-        vscode.window.showErrorMessage(newExpression.errors[0]);
-        return;
-      }
+    if (newExpression.errors.length) {
+      vscode.window.showErrorMessage(newExpression.errors[0]);
+      return;
+    }
 
-			activeEditor.edit(editBuilder => {
-				editBuilder.replace(selection, formatExpression(newExpression));
-			});
+    activeEditor.edit(editBuilder => {
+      editBuilder.replace(selection, formatExpression(newExpression));
+    });
 	});
 
 	context.subscriptions.push(disposable);

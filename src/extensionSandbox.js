@@ -98,7 +98,7 @@ const swapTernary = (ternary) => {
     }
 
     // check for start of JSX
-    if (char === '<' && next.match(/[a-z]/i)) {
+    if (char === '<' && next.match(/[a-z>]/i)) {
       state.jsxDepth += 1;
       currentPart.push(char);
       continue;
@@ -151,7 +151,6 @@ const swapTernary = (ternary) => {
       }
       currentPart.push(char);
       if (next === undefined) {
-        console.log('end')
         transferWhitespace(Part.FalseCase, Part.FalseCaseBeginFormatting, Part.FalseCaseEndFormatting);
         break;
       }
@@ -236,43 +235,15 @@ const swapTernary = (ternary) => {
   return expression;
 }
 
-swapTernary(`{!hasLinkedBankAccount ? (
-  <View style={styles.accountContainer}>
-    <View style={[styles.accountTextContainer, styles.accountTextMargin]}>
-      <View style={styles.questionMarkCircle}>
-        <Icon
-          name='questionMark'
-          stroke={localColors.keyLineLightGrey}
-          fill={localColors.keyLineLightGrey}
-          width={15}
-          height={15}
-        />
-      </View>
-      <View>
-        <Text style={styles.accountTitle}>{messages.noAccountTitle}</Text>
-        <Text style={styles.accountSubtitle}>{messages.noAccountSubtitle}</Text>
-      </View>
-    </View>
-    <CTAButton
-      variant='primary'
-      size='small'
-      style={styles.noAccountCTA}
-      onPress={() => openLink({ isManualConfirm: false })}
-    >
-      {messages.noAccountCTA}
-    </CTAButton>
-  </View>
+swapTernary(`{isLoading ? (
+  <Loading size='small' color={colors.forest} />
 ) : (
-  <View style={[styles.accountContainer, styles.paddingOverride]}>
-    <View style={[styles.accountTextContainer]}>
-      <BankAccount
-        containerStyle={styles.bankAccountContainer}
-        displayAccountType
-        accountNameStyle={styles.accountTitle}
-        accountTypeOrMaskStyle={styles.accountSubtitle}
-        editIcon='remove'
-        edit={() => setShowModal(true)}
-      />
-    </View>
-  </View>
+  <>
+    <Icon name='rewardsStar' style={styles.icon} fill={colors.forest} />
+    <Text style={styles.points}>
+      {points}
+      <View style={{ width: 1 }} />
+      <Text style={styles.text}>pts</Text>
+    </Text>
+  </>
 )}`);
