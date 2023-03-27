@@ -83,6 +83,8 @@ const swapTernary = (ternary) => {
     const next = characters[0];
     const currentPart = expression[state.part];
 
+    console.log('char', char, 'prev', prev, 'next', next, 'state', JSON.stringify(state), 'currentPart', currentPart.join(''))
+
     // if we're in a string, check if it ends
     if (state.quote) {
       if (char === state.quote) state.quote = '';
@@ -91,7 +93,7 @@ const swapTernary = (ternary) => {
     }
 
     // if we're not in a string/comment, but the char is a quote, save the quote and wait for close
-    if (isQuote(char) && !state.quote && !state.inComment) {
+    if (isQuote(char) && !state.quote && state.inComment === 'none') {
       state.quote = char;
       currentPart.push(char);
       continue;
@@ -228,6 +230,7 @@ const swapTernary = (ternary) => {
 
   console.log({
     ...expression,
+    condition: expression.condition.join(''),
     trueCase: expression.trueCase.join(''),
     falseCase: expression.falseCase.join(''),
   });
@@ -235,15 +238,4 @@ const swapTernary = (ternary) => {
   return expression;
 }
 
-swapTernary(`{isLoading ? (
-  <Loading size='small' color={colors.forest} />
-) : (
-  <>
-    <Icon name='rewardsStar' style={styles.icon} fill={colors.forest} />
-    <Text style={styles.points}>
-      {points}
-      <View style={{ width: 1 }} />
-      <Text style={styles.text}>pts</Text>
-    </Text>
-  </>
-)}`);
+swapTernary(`complete === 'none' ? '2021-01-01T00:00:00.000Z' : undefined`);

@@ -104,7 +104,7 @@ export const swapTernary = (ternary: string) => {
     }
 
     // if we're not in a string/comment, but the char is a quote, save the quote and wait for close
-    if (isQuote(char) && !state.quote && !state.inComment) {
+    if (isQuote(char) && !state.quote && state.inComment === 'none') {
       state.quote = char;
       currentPart.push(char);
       continue;
